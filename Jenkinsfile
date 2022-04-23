@@ -6,6 +6,7 @@ pipeline{
     }
     environment{
         DOCKERHUB_CREDENTIALS=credentials('docker-creds')
+        KUBECONFIG=crendtials('kubeconfig')
     }
     stages{
         stage('Cleanup'){
@@ -72,6 +73,14 @@ pipeline{
                     sh 'docker run -d -p9090:8080 --name demoapp dockerhamse/demoapp:$BUILD_NUMBER'
                     sh 'sleep 5'
                     sh 'docker ps -a' 
+                }
+            }
+        }
+        stage("Deploy to k8s"){
+            steps{
+                echo "Deploying to AKS cluster"
+                script{
+                    sh "kubectl create -f ./k8s/deployments/app.yaml --kubeconfig $KUBECONFIG"
                 }
             }
         }
