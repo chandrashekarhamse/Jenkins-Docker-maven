@@ -5,10 +5,9 @@ pipeline{
         timeout(time: 10, unit: 'MINUTES')
     }
     stages{
-        stage('workspace Cleanup'){
+        stage('Cleanup'){
             steps{
-                echo "Cleaning up the workspace"
-                cleanWs()
+                echo "Cleaning up older docker images"
                 script{
                     try{
                         sh 'docker rm -f $(docker ps -aq)'
