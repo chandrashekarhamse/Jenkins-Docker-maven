@@ -55,7 +55,7 @@ pipeline{
             steps{
                 echo "Pushing docker image registry"
                 sh 'docker tag demoapp:$BUILD_NUMBER dockerhamse/demoapp:$BUILD_NUMBER'
-                sh 'echo $DOCKERHUB_CREDENTIALS | docker login -u dockerhamse --password-stdin'
+                sh 'docker login -u dockerhamse -p Mys7@Kar'
                 sh 'docker push dockerhamse/demoapp:$BUILD_NUMBER'
             }
             post{
