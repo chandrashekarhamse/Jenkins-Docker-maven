@@ -4,6 +4,9 @@ pipeline{
     options{
         timeout(time: 10, unit: 'MINUTES')
     }
+    environment{
+        DOCKERHUB_CREDENTIALS=credentials('DOCKER_CREDS')
+    }
     stages{
         stage('Cleanup'){
             steps{
@@ -38,6 +41,7 @@ pipeline{
                 echo "Building docker images using artifacts from build stage"
                 script {
                     sh 'docker build -t demoapp:$BUILD_NUMBER .'
+                    sh 'docker images'
                 }
             }
             post{
@@ -51,6 +55,7 @@ pipeline{
             steps{
                 echo "Pushing docker image registry"
                 sh 'docker tag demoapp:$BUILD_NUMBER dockerhamse/demoapp:$BUILD_NUMBER'
+                sh 'docker login -u $DOCKERHUB_CREDENTIALS'
                 sh 'docker push dockerhamse/demoapp:$BUILD_NUMBER'
             }
             post{
