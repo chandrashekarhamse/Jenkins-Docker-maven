@@ -6,11 +6,13 @@ pipeline{
     }
     stages{
         stage('workspace Cleanup'){
-            echo "Cleaning up the workspace"
-            cleanWs()
-            script{
-                sh 'docker rm -f $(docker ps -aq)'
-                sh 'docker rmi -f $(docker images -aq)'
+            steps{
+                echo "Cleaning up the workspace"
+                cleanWs()
+                script{
+                    sh 'docker rm -f $(docker ps -aq)'
+                    sh 'docker rmi -f $(docker images -aq)'
+                }
             }
         }
         stage("Building artifacts"){
