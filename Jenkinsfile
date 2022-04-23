@@ -55,7 +55,7 @@ pipeline{
             steps{
                 echo "Pushing docker image registry"
                 sh 'docker tag demoapp:$BUILD_NUMBER dockerhamse/demoapp:$BUILD_NUMBER'
-                sh 'docker login -u $DOCKERHUB_CREDENTIALS'
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS --password-stdin'
                 sh 'docker push dockerhamse/demoapp:$BUILD_NUMBER'
             }
             post{
@@ -80,6 +80,7 @@ pipeline{
         always{
             echo "Cleaning up the workspace"
             cleanWs()
+            sh 'docker logout'
         }
         success{
             slackSend channel: '#jenkinsci',
