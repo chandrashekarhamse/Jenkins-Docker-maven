@@ -51,13 +51,14 @@ pipeline{
             steps{
                 echo "Pushing docker image registry"
                 sh 'docker tag demoapp:$BUILD_NUMBER dockerhamse/demoapp:$BUILD_NUMBER'
+                sh 'docker push dockerhamse/demoapp:$BUILD_NUMBER'
             }
         }
         stage('Deploy docker image'){
             steps{
                 echo "Running the docker images"
                 script{
-                    sh 'docker run -d -p9090:8080 --name demoapp demoapp'
+                    sh 'docker run -d -p9090:8080 --name demoapp dockerhamse/demoapp:$BUILD_NUMBER'
                     sh 'sleep 5'
                     sh 'docker ps -a' 
                 }
