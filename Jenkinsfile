@@ -59,6 +59,10 @@ pipeline{
         }
     }
     post{
+        always{
+            echo "Cleaning up the workspace"
+            cleanWs()
+        }
         success{
             slackSend channel: '#jenkinsci',
                       color: 'good',
