@@ -6,7 +6,7 @@ pipeline{
     }
     environment{
         DOCKERHUB_CREDENTIALS=credentials('docker-creds')
-        KUBECONFIG=crendtials('kubeconfig')
+        KUBECONFIG=credentials('kubeconfig')
     }
     stages{
         stage('Cleanup'){
