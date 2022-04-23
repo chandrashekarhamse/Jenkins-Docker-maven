@@ -4,9 +4,13 @@ pipeline{
     options{
         timeout(time: 10, unit: 'MINUTES')
     }
+    parameters{
+        choice(name: 'DEPLOY_TO', 'choices': ['Docker','AKS'], description: 'Deploy the image on ?')
+    }
     environment{
         DOCKERHUB_CREDENTIALS=credentials('docker-creds')
         KUBECONFIG=credentials('kubeconfig')
+        DEPLOY_TO="${params.DEPLOY_TO}"
     }
     stages{
         stage('Cleanup'){
@@ -77,6 +81,9 @@ pipeline{
             }
         }
         stage("Deploy to k8s"){
+            when{
+                environment name: 'DEPLOY_TO', value: 'AKS'
+            }
             steps{
                 echo "Deploying to AKS cluster"
                 script{
