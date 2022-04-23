@@ -5,7 +5,7 @@ pipeline{
         timeout(time: 10, unit: 'MINUTES')
     }
     environment{
-        DOCKERHUB_CREDENTIALS=credentials('DOCKER_CREDS')
+        DOCKERHUB_CREDENTIALS=credentials('docker-creds')
     }
     stages{
         stage('Cleanup'){
@@ -55,7 +55,7 @@ pipeline{
             steps{
                 echo "Pushing docker image registry"
                 sh 'docker tag demoapp:$BUILD_NUMBER dockerhamse/demoapp:$BUILD_NUMBER'
-                sh 'docker login -u dockerhamse -p Mys7@Kar'
+                sh 'docker login -u dockerhamse -p $DOCKERHUB_CREDENTIALS'
                 sh 'docker push dockerhamse/demoapp:$BUILD_NUMBER'
             }
             post{
