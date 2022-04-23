@@ -53,6 +53,12 @@ pipeline{
                 sh 'docker tag demoapp:$BUILD_NUMBER dockerhamse/demoapp:$BUILD_NUMBER'
                 sh 'docker push dockerhamse/demoapp:$BUILD_NUMBER'
             }
+            post{
+                failure{
+                    sh "exit 1"
+                    error "docker push failed"
+                }
+            }
         }
         stage('Deploy docker image'){
             steps{
