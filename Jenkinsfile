@@ -37,7 +37,7 @@ pipeline{
             steps{
                 echo "Building docker images using artifacts from build stage"
                 script {
-                    sh 'docker build -t demoapp .'
+                    sh 'docker build -t demoapp:$BUILD_NUMBER .'
                 }
             }
             post{
@@ -45,6 +45,12 @@ pipeline{
                     sh "exit 1"
                     error "docker build failed, exiting now!"
                 }
+            }
+        }
+        stage('Pushing image to registry'){
+            steps{
+                echo "Pushing docker image registry"
+                sh 'docker tag demoapp:$BUILD_NUMBER dockerhamse/demoapp:$BUILD_NUMBER'
             }
         }
         stage('Deploy docker image'){
