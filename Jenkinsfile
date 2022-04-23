@@ -10,8 +10,13 @@ pipeline{
                 echo "Cleaning up the workspace"
                 cleanWs()
                 script{
-                    sh 'docker rm -f $(docker ps -aq)'
-                    sh 'docker rmi -f $(docker images -aq)'
+                    try{
+                        sh 'docker rm -f $(docker ps -aq)'
+                        sh 'docker rmi -f $(docker images -aq)'
+                    }
+                    catch(e){
+                        echo "No image or containers to delete, continuing the execution"
+                    }
                 }
             }
         }
