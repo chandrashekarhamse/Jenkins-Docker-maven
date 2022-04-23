@@ -83,6 +83,12 @@ pipeline{
                     sh "kubectl create -f ./k8s/deployments/app.yaml --kubeconfig $KUBECONFIG"
                 }
             }
+            post{
+                failure{
+                    sh 'exit 1'
+                    error "Failed to deploy on AKS cluster"
+                }
+            }
         }
     }
     post{
