@@ -1,6 +1,18 @@
 pipeline{
     agent any
+
+    options{
+        timeout(time: 10, unit: 'MINUTES')
+    }
     stages{
+        stage('workspace Cleanup'){
+            echo "Cleaning up the workspace"
+            cleanWs()
+            script{
+                sh 'docker rm -f $(docker ps -aq)'
+                sh 'docker rmi -f $(docker images -aq)'
+            }
+        }
         stage("Building artifacts"){
             steps{
                 echo "Building the artifacts"
@@ -19,7 +31,7 @@ pipeline{
             steps{
                 echo "Building docker images using artifacts from build stage"
                 script {
-                    sh 'docker build -t demapp .'
+                    sh 'docker build -t demoapp .'
                 }
             }
             post{
@@ -29,16 +41,27 @@ pipeline{
                 }
             }
         }
+        stage('Deploy docker image'){
+            steps{
+                echo "Running the docker images"
+                script{
+                    sh 'docker run -d -p9090:8080 --name demoapp demoapp'
+                    sh 'sleep 5'
+                    sh 'docker ps -a' 
+                }
+            }
+        }
     }
     post{
-        always{
-            echo "========always========"
-        }
         success{
-            echo "========pipeline executed successfully ========"
+            slackSend channel: '#jenkinsci',
+                      color: 'good',
+                      message: "Job ${currentBuild.fullDisplayName} build successful"
         }
         failure{
-            echo "========pipeline execution failed========"
+            slackSend channel: '#jenkinsci',
+                      color: 'danger',
+                      message: "Job ${currentBuild.fullDisplayName} build failed"
         }
     }
 }
