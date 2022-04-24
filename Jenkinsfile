@@ -45,8 +45,10 @@ pipeline{
             steps{
                 echo "Building docker images using artifacts from build stage"
                 script {
-                    sh 'docker build -t demoapp:$BUILD_NUMBER .'
-                    sh 'docker images'
+                    sh """
+                        docker build -t demoapp:$BUILD_NUMBER .
+                        docker images
+                    """
                 }
             }
             post{
@@ -64,9 +66,6 @@ pipeline{
                     docker login -u dockerhamse -p $DOCKERHUB_CREDENTIALS
                     docker push dockerhamse/demoapp:$BUILD_NUMBER
                 """
-                // sh 'docker tag demoapp:$BUILD_NUMBER dockerhamse/demoapp:$BUILD_NUMBER'
-                // sh 'docker login -u dockerhamse -p $DOCKERHUB_CREDENTIALS'
-                // sh 'docker push dockerhamse/demoapp:$BUILD_NUMBER'
             }
             post{
                 failure{
@@ -79,9 +78,11 @@ pipeline{
             steps{
                 echo "Running the docker images"
                 script{
-                    sh 'docker run -d -p9090:8080 --name demoapp dockerhamse/demoapp:$BUILD_NUMBER'
-                    sh 'sleep 5'
-                    sh 'docker ps -a' 
+                    sh """
+                        docker run -d -p9090:8080 --name demoapp dockerhamse/demoapp:$BUILD_NUMBER
+                        sleep 5
+                        docker ps -a
+                    """
                 }
             }
         }
