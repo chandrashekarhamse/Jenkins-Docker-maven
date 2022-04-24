@@ -58,8 +58,12 @@ pipeline{
         }
         stage('Pushing image to registry'){
             steps{
-                pushDockerImage($BUILD_NUMBER,$DOCKERHUB_CREDENTIALS)
-                // echo "Pushing docker image registry"
+                echo "Pushing docker image registry"
+                sh """
+                    docker tag demoapp:$BUILD_NUMBER dockerhamse/demoapp:$BUILD_NUMBER
+                    docker login -u dockerhamse -p $DOCKERHUB_CREDENTIALS
+                    docker push dockerhamse/demoapp:$BUILD_NUMBER
+                """
                 // sh 'docker tag demoapp:$BUILD_NUMBER dockerhamse/demoapp:$BUILD_NUMBER'
                 // sh 'docker login -u dockerhamse -p $DOCKERHUB_CREDENTIALS'
                 // sh 'docker push dockerhamse/demoapp:$BUILD_NUMBER'
