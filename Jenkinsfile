@@ -1,3 +1,4 @@
+@Library('dockerpipeline-library') _
 pipeline{
     agent any
 
@@ -18,8 +19,7 @@ pipeline{
                 echo "Cleaning up older docker images"
                 script{
                     try{
-                        sh 'docker rm -f $(docker ps -aq)'
-                        sh 'docker rmi -f $(docker images -aq)'
+                        rmDockerContainerAndImage()
                     }
                     catch(e){
                         echo "No image or containers to delete, continuing the execution"
